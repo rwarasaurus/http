@@ -1,0 +1,29 @@
+{
+	"name": "rwarasaurus/http",
+	"description": "Http library",
+	"type": "library",
+	"license": "GPL-3.0",
+	"authors": [
+		{
+			"name": "Kieron",
+			"email": "hello@madebykieron.co.uk",
+			"homepage": "http://madebykieron.co.uk",
+			"role": "Developer"
+		}
+	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/php-fig/http-message.git"
+		}
+	],
+	"require": {
+		"php": ">=5.4",
+		"psr/http-message": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"": "src/"
+		}
+	}
+}
