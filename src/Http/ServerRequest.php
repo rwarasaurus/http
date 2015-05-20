@@ -35,8 +35,9 @@ class ServerRequest extends Request implements ServerRequestInterface {
 		$this->withMethod($this->server['REQUEST_METHOD']);
 		$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
 
-		$uri = new Uri();
-		$uri->parse($this->getHeaderLine('Host').$this->server['REQUEST_URI']);
+		$uri = new Uri;
+		$uri->withHost($this->getHeaderLine('Host'));
+		$uri->withPath(parse_url($this->server['REQUEST_URI'], PHP_URL_PATH));
 		$this->withUri($uri);
 
 		$this->files = [];
