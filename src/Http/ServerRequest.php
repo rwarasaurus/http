@@ -20,28 +20,41 @@ class ServerRequest extends Request implements ServerRequestInterface {
 
 	public function __construct(array $query = null, array $data = null, array $server = null, array $cookies = null, array $files = [], array $params = []) {
 		$this->query = $query;
-		$this->data = $data;
 		$this->server = $server;
 		$this->cookies = $cookies;
 		$this->params = $params;
 
+		$this->setHeaders();
+		$this->setBody($data);
+		$this->setUri();
+		$this->setUploadedFiles($files);
+
+		$this->withRequestTarget($this->server['REQUEST_URI']);
+		$this->withMethod($this->server['REQUEST_METHOD']);
+		$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
+	}
+
+	protected function setHeaders() {
 		foreach($this->server as $name => $value) {
 			if(strpos($name, 'HTTP_') === 0) {
 				$this->withAddedHeader(substr($name, 5), $value);
 			}
 		}
+	}
 
-		$this->withRequestTarget($this->server['REQUEST_URI']);
-		$this->withMethod($this->server['REQUEST_METHOD']);
-		$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
+	protected function setBody(array $data) {
+		$this->withBody(new Stream('php://input'));
+		$this->withParsedBody($data);
+	}
 
+	protected function setUri() {
 		$uri = new Uri;
 		$uri->withHost($this->getHeaderLine('Host'));
 		$uri->withPath(parse_url($this->server['REQUEST_URI'], PHP_URL_PATH));
 		$this->withUri($uri);
+	}
 
-		$this->files = [];
-
+	protected function setUploadedFiles(array $files) {
 		foreach($files as $file) {
 			if(is_array($file['name'])) {
 				for($index = 0; $index < count($file['name']); $index++) {
