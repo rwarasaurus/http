@@ -29,9 +29,17 @@ class ServerRequest extends Request implements ServerRequestInterface {
 		$this->setUri();
 		$this->setUploadedFiles($files);
 
-		$this->withRequestTarget($this->server['REQUEST_URI']);
-		$this->withMethod($this->server['REQUEST_METHOD']);
-		$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
+		if(array_key_exists('REQUEST_URI', $this->server)) {
+			$this->withRequestTarget($this->server['REQUEST_URI']);
+		}
+
+		if(array_key_exists('REQUEST_METHOD', $this->server)) {
+			$this->withMethod($this->server['REQUEST_METHOD']);
+		}
+
+		if(array_key_exists('SERVER_PROTOCOL', $this->server)) {
+			$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
+		}
 	}
 
 	protected function setHeaders() {
