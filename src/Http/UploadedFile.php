@@ -34,7 +34,7 @@ class UploadedFile implements UploadedFileInterface {
 	}
 
 	public function moveTo($targetPath) {
-		if(is_uploaded_file($this->tmp_name)) {
+		if(false === is_uploaded_file($this->tmp_name)) {
 			throw new InvalidArgumentException(sprintf('Invalid temporary file "%s".', $this->tmp_name));
 		}
 

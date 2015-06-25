@@ -63,14 +63,14 @@ class ServerRequest extends Request implements ServerRequestInterface {
 	}
 
 	protected function setUploadedFiles(array $files) {
-		foreach($files as $file) {
+		foreach($files as $key => $file) {
 			if(is_array($file['name'])) {
 				for($index = 0; $index < count($file['name']); $index++) {
-					$this->files[] = new UploadedFile($file['name'][$index], $file['tmp_name'][$index], $file['size'][$index], $file['type'][$index], $file['error'][$index]);
+					$this->files[$key] = new UploadedFile($file['name'][$index], $file['tmp_name'][$index], $file['size'][$index], $file['type'][$index], $file['error'][$index]);
 				}
 			}
 			else {
-				$this->files[] = new UploadedFile($file['name'], $file['tmp_name'], $file['size'], $file['type'], $file['error']);
+				$this->files[$key] = new UploadedFile($file['name'], $file['tmp_name'], $file['size'], $file['type'], $file['error']);
 			}
 		}
 	}
