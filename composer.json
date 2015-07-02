@@ -11,19 +11,19 @@
 			"role": "Developer"
 		}
 	],
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/php-fig/http-message.git"
-		}
-	],
 	"require": {
 		"php": ">=5.4",
-		"psr/http-message": "dev-master"
+		"psr/http-message": "1.0.x"
+	},
+	"require-dev": {
+		"phpspec/phpspec": "2.2.x"
 	},
 	"autoload": {
 		"psr-4": {
 			"": "src/"
 		}
+	},
+	"config": {
+		"bin-dir": "bin/"
 	}
 }
