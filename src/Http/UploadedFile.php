@@ -54,6 +54,10 @@ class UploadedFile implements UploadedFileInterface {
 	}
 
 	public function getClientMediaType() {
+		if($finfo = new \finfo(FILEINFO_MIME)) {
+			return $finfo->file($this->tmp_name);
+		}
+
 		return $this->type;
 	}
 
