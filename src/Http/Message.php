@@ -49,7 +49,7 @@ class Message implements MessageInterface {
 	}
 
 	public function getHeaderLine($name) {
-		return implode(',', $this->headers[$this->normalize($name)]);
+		return $this->hasHeader($name) ? implode(',', $this->getHeader($name)) : '';
 	}
 
 	public function withHeader($name, $value) {
