@@ -82,7 +82,7 @@ class Uri implements UriInterface {
 	}
 
 	public function withHost($host) {
-		if(strpos(':', $host) !== false) {
+		if($host != '' && strpos(':', $host) !== false) {
 			list($host, $port) = explode(':', $host);
 
 			return $this->withPort($port)->withHost($host);
