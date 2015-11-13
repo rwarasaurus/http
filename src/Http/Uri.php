@@ -6,15 +6,15 @@ use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface {
 
-	protected $scheme = 'http';
+	protected $scheme;
 
 	protected $user;
 
 	protected $pass;
 
-	protected $host = 'localhost';
+	protected $host;
 
-	protected $port = '80';
+	protected $port;
 
 	protected $path;
 
@@ -23,8 +23,30 @@ class Uri implements UriInterface {
 	protected $fragment;
 
 	public function parse($str) {
-		foreach(parse_url($str) as $key => $value) {
+		$components = parse_url($str);
+
+		if(false === $components) {
+			throw new \InvalidArgumentException('failed to parse malformed uri');
+		}
+
+		$defaults = [
+			'scheme' => 'http',
+			'user' => '',
+			'pass' => '',
+			'host' => 'localhost',
+			'port' => 80,
+			'path' => '/',
+			'query' => '',
+			'fragment' => '',
+		];
+
+		foreach(array_merge($defaults, $components) as $key => $value) {
 			$this->$key = $value;
+		}
+
+		// default to port 443 for https
+		if($this->scheme == 'https' && $this->port == 80) {
+			$this->port = 443;
 		}
 
 		return $this;
@@ -142,8 +164,10 @@ class Uri implements UriInterface {
 
 		$str .= $this->host;
 
-		if(false === ($this->scheme == 'http' && $this->port == '80') ||
-			false === ($this->scheme == 'https' && $this->port == '443')) {
+		if(
+			! ($this->scheme == 'http' && $this->port == 80) &&
+			! ($this->scheme == 'https' && $this->port == 443)
+		) {
 			$str .= ':' . $this->port;
 		}
 
