@@ -2,7 +2,6 @@
 
 namespace Http;
 
-use InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -14,11 +13,7 @@ class Message implements MessageInterface {
 
 	protected $body = '';
 
-	protected function normalize($str) {
-		if(false === is_string($str)) {
-			throw new InvalidArgumentException(sprintf('field name should be a string, %s given', gettype($str)));
-		}
-
+	protected function normalize(string $str) {
 		$str = str_replace(['_', '-'], ' ', $str);
 
 		$str = ucwords(strtolower($str));

@@ -18,7 +18,7 @@ class ServerRequest extends Request implements ServerRequestInterface {
 
 	protected $params;
 
-	public function __construct(array $query = null, array $data = null, array $server = null, array $cookies = null, array $files = [], array $params = []) {
+	public function __construct(array $query = [], array $data = [], array $server = [], array $cookies = [], array $files = [], array $params = []) {
 		$this->query = $query;
 		$this->server = $server;
 		$this->cookies = $cookies;
@@ -28,22 +28,22 @@ class ServerRequest extends Request implements ServerRequestInterface {
 		$this->setBody($data);
 		$this->setUri();
 		$this->setUploadedFiles($files);
-
-		if(array_key_exists('REQUEST_URI', $this->server)) {
-			$this->withRequestTarget($this->server['REQUEST_URI']);
-		}
-
-		if(array_key_exists('REQUEST_METHOD', $this->server)) {
-			$this->withMethod($this->server['REQUEST_METHOD']);
-		}
-
-		if(array_key_exists('SERVER_PROTOCOL', $this->server)) {
-			$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
-		}
 	}
 
 	protected function setHeaders() {
 		foreach($this->server as $name => $value) {
+			if($name === 'REQUEST_URI') {
+				$this->withRequestTarget($this->server['REQUEST_URI']);
+			}
+
+			if($name === 'REQUEST_METHOD') {
+				$this->withMethod($this->server['REQUEST_METHOD']);
+			}
+
+			if($name === 'SERVER_PROTOCOL') {
+				$this->withProtocolVersion($this->server['SERVER_PROTOCOL']);
+			}
+
 			if(strpos($name, 'HTTP_') === 0) {
 				$this->withAddedHeader(substr($name, 5), $value);
 			}
@@ -57,8 +57,13 @@ class ServerRequest extends Request implements ServerRequestInterface {
 
 	protected function setUri() {
 		$uri = new Uri;
-		$uri->withHost($this->getHeaderLine('Host'));
-		$uri->withPath(parse_url($this->server['REQUEST_URI'], PHP_URL_PATH));
+		$uri->parse('//'.$this->getHeaderLine('Host') . $this->getRequestTarget());
+
+		// get scheme
+		if(array_key_exists('HTTPS', $this->server) && false === empty($this->server['HTTPS'])) {
+			$uri->withScheme('https')->withPort(443);
+		}
+
 		$this->withUri($uri);
 	}
 

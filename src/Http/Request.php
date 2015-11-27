@@ -7,9 +7,9 @@ use Psr\Http\Message\UriInterface;
 
 class Request extends Message implements RequestInterface {
 
-	protected $requestTarget;
+	protected $requestTarget = '';
 
-	protected $method;
+	protected $method = 'GET';
 
 	protected $uri;
 

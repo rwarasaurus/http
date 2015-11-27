@@ -70,7 +70,7 @@ class Stream implements StreamInterface {
 	}
 
 	public function write($string) {
-		fwrite($this->stream, $string);
+		return fwrite($this->stream, $string);
 	}
 
 	public function isReadable() {
