@@ -13,7 +13,7 @@ class Message implements MessageInterface {
 
 	protected $body = '';
 
-	protected function normalize(string $str) {
+	protected function normalize($str) {
 		$str = str_replace(['_', '-'], ' ', $str);
 
 		$str = ucwords(strtolower($str));
