@@ -2,7 +2,6 @@
 
 namespace Http;
 
-use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFile implements UploadedFileInterface {
@@ -27,7 +26,7 @@ class UploadedFile implements UploadedFileInterface {
 
 	public function getStream() {
 		if(false === is_file($this->tmp_name)) {
-			throw new InvalidArgumentException('temp file has been removed.');
+			throw new \InvalidArgumentException('temp file has been removed.');
 		}
 
 		return new Stream($this->tmp_name);
@@ -35,7 +34,7 @@ class UploadedFile implements UploadedFileInterface {
 
 	public function moveTo($targetPath) {
 		if(false === is_uploaded_file($this->tmp_name)) {
-			throw new InvalidArgumentException(sprintf('Invalid temporary file "%s".', $this->tmp_name));
+			throw new \InvalidArgumentException(sprintf('Invalid temporary file "%s".', $this->tmp_name));
 		}
 
 		return move_uploaded_file($this->tmp_name, $targetPath);

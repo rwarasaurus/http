@@ -1,6 +1,6 @@
 Just another psr7 http library
 
-	$request = new Http\ServerRequest($\_GET, $\_POST, $\_SERVER, $\_COOKIE, $\_FILES);
+	$request = new Http\ServerRequest($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES);
 
 	$uri = $request->getUri()->getPath();
 

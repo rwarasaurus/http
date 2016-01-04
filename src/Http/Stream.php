@@ -33,7 +33,9 @@ class Stream implements StreamInterface {
 
 	public function detach() {
 		$stream = $this->stream;
-		$this->handle = null;
+
+		$this->stream = null;
+
 		$this->readable = $this->writable = $this->seekable = false;
 
 		return $stream;
