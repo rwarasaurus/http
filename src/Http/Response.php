@@ -7,9 +7,9 @@ use Psr\Http\Message\ResponseInterface;
 
 class Response extends Message implements ResponseInterface {
 
-	protected $code;
+	protected $code = '200';
 
-	protected $reasonPhrase;
+	protected $reasonPhrase = 'OK';
 
 	public function getStatusCode() {
 		return $this->code;
