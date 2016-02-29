@@ -84,7 +84,7 @@ class Stream implements StreamInterface {
 	}
 
 	public function getContents() {
-		return stream_get_contents($this->stream);
+		return stream_get_contents($this->stream, -1, 0);
 	}
 
 	public function getMetadata($key = null) {
