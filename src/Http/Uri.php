@@ -22,8 +22,32 @@ class Uri implements UriInterface {
 
 	protected $fragment;
 
-	public function parse($str) {
-		$components = parse_url($str);
+	public function fromServerParams(array $params) {
+		// parse uri
+		if(array_key_exists('REQUEST_URI', $params)) {
+			$this->parse($params['REQUEST_URI']);
+		}
+
+		// set host
+		if(array_key_exists('HTTP_HOST', $params)) {
+			$this->host = $params['HTTP_HOST'];
+		}
+
+		// set port
+		if(array_key_exists('SERVER_PORT', $params)) {
+			$this->port = $params['SERVER_PORT'];
+		}
+
+		// Set to a non-empty value if the script was queried through the HTTPS protocol.
+		if( ! empty($params['HTTPS'])) {
+			$this->scheme = 'https';
+		}
+
+		return $this;
+	}
+
+	public function parse(string $url) {
+		$components = parse_url($url);
 
 		if(false === $components) {
 			throw new \InvalidArgumentException('failed to parse malformed uri');

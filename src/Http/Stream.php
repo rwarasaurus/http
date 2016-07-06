@@ -15,7 +15,7 @@ class Stream implements StreamInterface {
 	protected $seekable;
 
 	public function __construct($filepath = null) {
-		$this->stream = fopen(null === $filepath ? 'php://temp' : $filepath, 'r+');
+		$this->stream = fopen(null === $filepath ? 'php://temp' : $filepath, 'a+');
 		$this->readable = $this->writable = $this->seekable = true;
 	}
 
@@ -24,7 +24,7 @@ class Stream implements StreamInterface {
 	}
 
 	public function __toString() {
-		return stream_get_contents($this->stream, -1, 0);
+		return $this->getContents();
 	}
 
 	public function close() {

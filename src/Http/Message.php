@@ -53,6 +53,14 @@ class Message implements MessageInterface {
 		return $this;
 	}
 
+	public function withHeaders(array $headers) {
+		foreach($headers as $name => $value) {
+			$this->withHeader($name, $value);
+		}
+
+		return $this;
+	}
+
 	public function withAddedHeader($name, $value) {
 		if(false === $this->hasHeader($name)) {
 			return $this->withHeader($name, $value);
