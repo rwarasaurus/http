@@ -20,7 +20,7 @@ class Emitter {
 
 		foreach($response->getHeaders() as $name => $values) {
 			foreach($values as $value) {
-				header(sprintf('%s: %s', $name, $value));
+				header(sprintf('%s: %s', $name, $value), false);
 			}
 		}
 
