@@ -30,7 +30,7 @@ class Uri implements UriInterface {
 
 		// set host
 		if(array_key_exists('HTTP_HOST', $params)) {
-			$this->host = $params['HTTP_HOST'];
+			$this->host = explode(':', $params['HTTP_HOST'])[0];
 		}
 
 		// set port

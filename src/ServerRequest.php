@@ -56,15 +56,7 @@ class ServerRequest extends Request implements ServerRequestInterface {
 	}
 
 	protected function setUri() {
-		$uri = new Uri;
-		$uri->parse('//'.$this->getHeaderLine('Host') . $this->getRequestTarget());
-
-		// get scheme
-		if(array_key_exists('HTTPS', $this->server) && false === empty($this->server['HTTPS'])) {
-			$uri->withScheme('https')->withPort(443);
-		}
-
-		$this->withUri($uri);
+		$this->withUri((new Uri)->fromServerParams($this->server));
 	}
 
 	protected function setUploadedFiles(array $files) {
