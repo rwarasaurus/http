@@ -24,7 +24,14 @@ class Emitter {
 			}
 		}
 
-		echo $response->getBody();
+		$stream = $response->getBody();
+
+		$stream->rewind();
+
+		while( ! $stream->eof()) {
+			echo $stream->read(4096);
+			flush();
+		}
 	}
 
 }
