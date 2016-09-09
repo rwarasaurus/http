@@ -34,7 +34,7 @@ class Uri implements UriInterface {
 		}
 
 		// set port
-		if(array_key_exists('SERVER_PORT', $params)) {
+		if(array_key_exists('SERVER_PORT', $params) && $params['SERVER_PORT'] != 80 && $params['SERVER_PORT'] != 443) {
 			$this->port = $params['SERVER_PORT'];
 		}
 
@@ -58,7 +58,7 @@ class Uri implements UriInterface {
 			'user' => '',
 			'pass' => '',
 			'host' => 'localhost',
-			'port' => 80,
+			'port' => '',
 			'path' => '/',
 			'query' => '',
 			'fragment' => '',
@@ -66,11 +66,6 @@ class Uri implements UriInterface {
 
 		foreach(array_merge($defaults, $components) as $key => $value) {
 			$this->$key = $value;
-		}
-
-		// default to port 443 for https
-		if($this->scheme == 'https' && $this->port == 80) {
-			$this->port = 443;
 		}
 
 		return $this;
@@ -188,10 +183,7 @@ class Uri implements UriInterface {
 
 		$str .= $this->host;
 
-		if(
-			! ($this->scheme == 'http' && $this->port == 80) &&
-			! ($this->scheme == 'https' && $this->port == 443)
-		) {
+		if($this->port) {
 			$str .= ':' . $this->port;
 		}
 
