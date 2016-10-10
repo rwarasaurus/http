@@ -42,7 +42,7 @@ class Uri implements UriInterface {
 		}
 
 		if(array_key_exists('QUERY_STRING', $params)) {
-			$uri->withPath($params['QUERY_STRING']);
+			$uri->withQuery($params['QUERY_STRING']);
 		}
 
 		return $uri;
