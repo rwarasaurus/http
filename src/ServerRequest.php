@@ -56,7 +56,7 @@ class ServerRequest extends Request implements ServerRequestInterface {
 	}
 
 	protected function setUri() {
-		$this->withUri((new Uri)->fromServerParams($this->server));
+		$this->withUri(Uri::fromServerParams($this->server));
 	}
 
 	protected function setUploadedFiles(array $files) {

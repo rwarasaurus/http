@@ -9,6 +9,8 @@ class UriSpec extends ObjectBehavior {
 
     protected $sample = 'http://username:password@hostname:9090/path?arg=value#anchor';
 
+    protected $malformed = '/gaming/19-most-mindblowing-video-game-plot-twists-since-2000/page:12';
+
 	public function it_is_initializable() {
 		$this->shouldHaveType('Http\Uri');
 	}
@@ -45,11 +47,11 @@ class UriSpec extends ObjectBehavior {
 
         $this->parse('http://localhost/');
 
-        $this->getPort()->shouldEqual(80);
+        $this->getPort()->shouldEqual('');
 
         $this->parse('https://localhost/');
 
-        $this->getPort()->shouldEqual(443);
+        $this->getPort()->shouldEqual('');
 	}
 
     public function it_should_return_parsed_pathname() {
@@ -65,6 +67,10 @@ class UriSpec extends ObjectBehavior {
     public function it_should_return_parsed_fragment() {
         $this->parse($this->sample);
         $this->getFragment()->shouldEqual('anchor');
+	}
+
+    public function it_should_throw_malformed_exception() {
+        $this->shouldThrow('Http\UriMalformedException')->during('parse', [$this->malformed]);
 	}
 
 }

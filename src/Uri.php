@@ -3,72 +3,72 @@
 namespace Http;
 
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\RequestInterface;
 
 class Uri implements UriInterface {
 
-	protected $scheme;
+	protected $scheme = 'http';
 
-	protected $user;
+	protected $user = '';
 
-	protected $pass;
+	protected $pass = '';
 
-	protected $host;
+	protected $host = 'localhost';
 
-	protected $port;
+	protected $port = '';
 
-	protected $path;
+	protected $path = '/';
 
-	protected $query;
+	protected $query = '';
 
-	protected $fragment;
+	protected $fragment = '';
 
-	public function fromServerParams(array $params) {
-		// parse uri
-		if(array_key_exists('REQUEST_URI', $params)) {
-			$this->parse($params['REQUEST_URI']);
-		}
-
-		// set host
-		if(array_key_exists('HTTP_HOST', $params)) {
-			$this->host = explode(':', $params['HTTP_HOST'])[0];
-		}
-
-		// set port
-		if(array_key_exists('SERVER_PORT', $params) && $params['SERVER_PORT'] != 80 && $params['SERVER_PORT'] != 443) {
-			$this->port = $params['SERVER_PORT'];
-		}
+	public static function fromServerParams(array $params) {
+		$uri = new Uri;
 
 		// Set to a non-empty value if the script was queried through the HTTPS protocol.
-		if( ! empty($params['HTTPS'])) {
-			$this->scheme = 'https';
+		$uri->withScheme( ! empty($params['HTTPS']) ? 'https' : 'http');
+
+		if(array_key_exists('HTTP_HOST', $params)) {
+			$uri->withHost($params['HTTP_HOST']);
 		}
 
-		return $this;
+		if(array_key_exists('SERVER_PORT', $params)) {
+			$uri->withPort($params['SERVER_PORT']);
+		}
+
+		if(array_key_exists('REQUEST_URI', $params)) {
+			$uri->withPath(explode('?', $params['REQUEST_URI'])[0]);
+		}
+
+		if(array_key_exists('QUERY_STRING', $params)) {
+			$uri->withPath($params['QUERY_STRING']);
+		}
+
+		return $uri;
 	}
 
-	public function parse(string $url) {
-		$components = parse_url($url);
+	public function parse(string $uri) {
+		$parts = parse_url($uri);
 
-		if(false === $components) {
-			throw new \InvalidArgumentException('failed to parse malformed uri');
+		if($parts === false) {
+			throw new UriMalformedException(sprintf('failed to parse malformed uri: %s', $uri));
 		}
 
 		$defaults = [
 			'scheme' => 'http',
+			'host' => '',
+			'port' => '',
 			'user' => '',
 			'pass' => '',
-			'host' => 'localhost',
-			'port' => '',
-			'path' => '/',
+			'path' => '',
 			'query' => '',
 			'fragment' => '',
 		];
 
-		foreach(array_merge($defaults, $components) as $key => $value) {
-			$this->$key = $value;
+		foreach(array_merge($defaults, $parts) as $part => $value) {
+			$this->{$part} = $value;
 		}
-
-		return $this;
 	}
 
 	public function getScheme() {
@@ -123,12 +123,6 @@ class Uri implements UriInterface {
 	}
 
 	public function withHost($host) {
-		if($host != '' && strpos(':', $host) !== false) {
-			list($host, $port) = explode(':', $host);
-
-			return $this->withPort($port)->withHost($host);
-		}
-
 		$this->host = $host;
 
 		return $this;
